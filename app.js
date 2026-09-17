@@ -211,9 +211,61 @@ let currentSlide = 0;
 const totalSlides = 5;
 
 // ============================================
+// DEVICE DETECTION & ADAPTIVE RUNTIME ENGINE
+// ============================================
+const DeviceManager = {
+  isMobile: false,
+  isTablet: false,
+  isDesktop: false,
+  isTouch: false,
+  orientation: 'portrait',
+
+  init() {
+    this.detect();
+    window.addEventListener('resize', () => this.detect(), { passive: true });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => this.detect(), 120);
+    }, { passive: true });
+  },
+
+  detect() {
+    const width = window.innerWidth;
+    this.isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(pointer: coarse)').matches;
+    this.isMobile = width <= 768;
+    this.isTablet = width > 768 && width <= 1024;
+    this.isDesktop = width > 1024;
+    this.orientation = window.innerHeight >= window.innerWidth ? 'portrait' : 'landscape';
+
+    const root = document.documentElement;
+    root.classList.toggle('is-mobile', this.isMobile);
+    root.classList.toggle('is-tablet', this.isTablet);
+    root.classList.toggle('is-desktop', this.isDesktop);
+    root.classList.toggle('has-touch', this.isTouch);
+    root.classList.toggle('no-touch', !this.isTouch);
+    root.setAttribute('data-device', this.isMobile ? 'mobile' : (this.isTablet ? 'tablet' : 'desktop'));
+    root.setAttribute('data-orientation', this.orientation);
+
+    // Auto-close mobile navigation if viewport expands to desktop
+    if (this.isDesktop) {
+      const nav = document.getElementById('mobile-nav');
+      const overlay = document.getElementById('mobile-nav-overlay');
+      if (nav && nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        overlay && overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+  }
+};
+
+// Immediate invocation so <html> reflects device capabilities before DOM render
+DeviceManager.init();
+
+// ============================================
 // DOM READY
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+  DeviceManager.detect();
   initSplashScreen();
   initHeader();
   initMobileNav();
@@ -273,6 +325,20 @@ function initMobileNav() {
   document.querySelectorAll('.mobile-nav-link').forEach(link => {
     link.addEventListener('click', closeNav);
   });
+
+  // Touch swipe to close drawer on mobile
+  let navTouchStartX = 0;
+  if (nav) {
+    nav.addEventListener('touchstart', e => {
+      navTouchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    nav.addEventListener('touchend', e => {
+      const diffX = navTouchStartX - e.changedTouches[0].clientX;
+      if (diffX > 50) { // swiped left
+        closeNav();
+      }
+    }, { passive: true });
+  }
 }
 
 // ============================================
@@ -951,14 +1017,23 @@ function initTestimonials() {
     });
   }
 
-  // Touch / swipe support
+  // Touch / swipe support with direction locking
   let touchStartX = 0;
-  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  let touchStartY = 0;
+  track.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    clearInterval(autoSlide);
+  }, { passive: true });
+
   track.addEventListener('touchend', e => {
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) {
-      goToSlide(diff > 0 ? currentSlide + 1 : currentSlide - 1);
+    const diffX = touchStartX - e.changedTouches[0].clientX;
+    const diffY = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(diffX) > 36 && Math.abs(diffX) > Math.abs(diffY)) {
+      goToSlide(diffX > 0 ? currentSlide + 1 : currentSlide - 1);
     }
+    clearInterval(autoSlide);
+    autoSlide = setInterval(() => goToSlide(currentSlide + 1), 5500);
   }, { passive: true });
 }
 
