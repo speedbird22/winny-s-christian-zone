@@ -4,6 +4,8 @@
 
 'use strict';
 
+const CROSS_SVG_ICON = `<svg class="cross-icon" viewBox="0 0 20 26" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8.5 1C8.5 0.45 8.95 0 9.5 0H10.5C11.05 0 11.5 0.45 11.5 1V7H17.5C18.05 7 18.5 7.45 18.5 8V9C18.5 9.55 18.05 10 17.5 10H11.5V25C11.5 25.55 11.05 26 10.5 26H9.5C8.95 26 8.5 25.55 8.5 25V10H2.5C1.95 10 1.5 9.55 1.5 9V8C1.5 7.45 1.95 7 2.5 7H8.5V1Z"/></svg>`;
+
 // ============================================
 // PRODUCT DATA (prices in INR, no false discounts)
 // ============================================
@@ -529,7 +531,7 @@ function renderProducts(tab) {
   if (filtered.length === 0) {
     grid.innerHTML = `
       <div class="collections-empty" style="grid-column: 1 / -1;">
-        <div class="collections-empty-icon">&#10013;</div>
+        <div class="collections-empty-icon">${CROSS_SVG_ICON}</div>
         <h3>No products found</h3>
         <p>Try clearing your search or switching to another category.</p>
       </div>
@@ -839,7 +841,7 @@ function renderCartPage(subtotal, totalQty) {
   const shippingText = document.getElementById('free-shipping-text');
   if (shippingText) {
     if (isBulkOrder) {
-      shippingText.innerHTML = '<strong>&#10013; Free delivery applied on your bulk order!</strong>';
+      shippingText.innerHTML = `<strong>${CROSS_SVG_ICON} Free delivery applied on your bulk order!</strong>`;
     } else {
       shippingText.textContent = 'Free delivery on bulk orders';
     }
