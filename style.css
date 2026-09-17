@@ -137,11 +137,25 @@ ul { list-style: none; }
   }
 }
 
+.cross-icon {
+  display: block;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
 .splash-logo-cross {
-  font-size: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--gold);
   line-height: 1;
   filter: drop-shadow(0 2px 6px rgba(201, 168, 76, 0.35));
+  flex-shrink: 0;
+}
+
+.splash-logo-cross .cross-icon {
+  width: 25px;
+  height: 33px;
 }
 
 .splash-logo-text {
@@ -216,10 +230,18 @@ ul { list-style: none; }
 .logo:hover { opacity: 0.8; }
 
 .logo-cross {
-  font-size: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--gold);
   line-height: 1;
   filter: drop-shadow(0 2px 4px rgba(201,168,76,0.3));
+  flex-shrink: 0;
+}
+
+.logo-cross .cross-icon {
+  width: 19px;
+  height: 25px;
 }
 
 .logo-text {
@@ -429,6 +451,9 @@ ul { list-style: none; }
 .mobile-nav-close:hover { background: rgba(201,168,76,0.1); color: var(--gold-dark); }
 
 .mobile-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--font-display);
   font-size: 20px;
   font-weight: 600;
@@ -436,6 +461,12 @@ ul { list-style: none; }
   margin-bottom: 32px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--border);
+}
+
+.mobile-nav-logo .cross-icon {
+  width: 16px;
+  height: 21px;
+  color: var(--gold);
 }
 
 .mobile-nav-link {
@@ -2061,9 +2092,17 @@ ul { list-style: none; }
 .footer-logo:hover { opacity: 0.85; }
 
 .footer-logo-cross {
-  font-size: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--gold);
   line-height: 1;
+  flex-shrink: 0;
+}
+
+.footer-logo-cross .cross-icon {
+  width: 22px;
+  height: 29px;
 }
 
 .footer-logo-vbar {
@@ -3009,8 +3048,9 @@ html.is-mobile .product-quick-add {
   .logo {
     gap: 8px;
   }
-  .logo-cross {
-    font-size: 20px;
+  .logo-cross .cross-icon {
+    width: 16px;
+    height: 21px;
   }
   .logo-name {
     font-size: 17px;
